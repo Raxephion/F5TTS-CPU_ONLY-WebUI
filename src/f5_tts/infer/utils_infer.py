@@ -35,15 +35,14 @@ from f5_tts.model.utils import convert_char_to_pinyin, get_tokenizer
 _ref_audio_cache = {}
 _ref_text_cache = {}
 
-device = (
-    "cuda"
-    if torch.cuda.is_available()
-    else "xpu"
-    if torch.xpu.is_available()
-    else "mps"
-    if torch.backends.mps.is_available()
-    else "cpu"
-)
+# Set device
+if hasattr(torch, "xpu") and torch.xpu.is_available():
+    DEVICE = "xpu"
+elif torch.cuda.is_available():
+    DEVICE = "cuda"
+else:
+    DEVICE = "cpu"
+
 
 tempfile_kwargs = {"delete_on_close": False} if sys.version_info >= (3, 12) else {"delete": False}
 
@@ -101,7 +100,7 @@ def chunk_text(text, max_chars=135):
 
 
 # load vocoder
-def load_vocoder(vocoder_name="vocos", is_local=False, local_path="", device=device, hf_cache_dir=None):
+def load_vocoder(vocoder_name="vocos", is_local=False, local_path="", device=DEVICE, hf_cache_dir=None):
     if vocoder_name == "vocos":
         # vocoder = Vocos.from_pretrained("charactr/vocos-mel-24khz").to(device)
         if is_local:
@@ -148,7 +147,7 @@ def load_vocoder(vocoder_name="vocos", is_local=False, local_path="", device=dev
 asr_pipe = None
 
 
-def initialize_asr_pipeline(device: str = device, dtype=None):
+def initialize_asr_pipeline(device: str = DEVICE, dtype=None):
     if dtype is None:
         dtype = (
             torch.float16
@@ -172,7 +171,7 @@ def initialize_asr_pipeline(device: str = device, dtype=None):
 def transcribe(ref_audio, language=None):
     global asr_pipe
     if asr_pipe is None:
-        initialize_asr_pipeline(device=device)
+        initialize_asr_pipeline(device=DEVICE)
     return asr_pipe(
         ref_audio,
         chunk_length_s=30,
@@ -241,7 +240,7 @@ def load_model(
     vocab_file="",
     ode_method=ode_method,
     use_ema=True,
-    device=device,
+    device=DEVICE,
 ):
     if vocab_file == "":
         vocab_file = str(files("f5_tts").joinpath("infer/examples/vocab.txt"))
@@ -395,7 +394,7 @@ def infer_process(
     sway_sampling_coef=sway_sampling_coef,
     speed=speed,
     fix_duration=fix_duration,
-    device=device,
+    device=DEVICE,
 ):
     # Split the input text into batches
     audio, sr = torchaudio.load(ref_audio)
