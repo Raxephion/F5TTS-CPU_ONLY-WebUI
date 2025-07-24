@@ -1,8 +1,12 @@
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
 
+REM Get current directory
+set "CURRENT_DIR=%cd%"
+
 echo.
-echo [*] Starting F5-TTS CPU-Only Setup...
+echo [*] Starting F5-TTS CPU-Only Setup in:
+echo     %CURRENT_DIR%
 echo.
 
 REM Step 1: Create Conda Environment
@@ -13,9 +17,9 @@ REM Step 2: Activate Environment
 echo [*] Activating environment...
 call conda activate F5-TTS-CPU_ONLY
 
-REM Step 3: Navigate to folder
-echo [*] Changing directory to C:\F5-TTS-CPU_ONLY
-cd /d C:\F5-TTS-CPU_ONLY
+REM Step 3: Navigate to current directory
+echo [*] Installing from: %CURRENT_DIR%
+cd /d "%CURRENT_DIR%"
 
 REM Step 4: Install package in editable mode
 echo [*] Installing package in editable mode...
