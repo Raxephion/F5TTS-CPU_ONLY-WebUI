@@ -1,4 +1,6 @@
-# F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching
+# F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching for CPU only inference
+
+*modified by @raxephion*
 
 [![python](https://img.shields.io/badge/Python-3.10-brightgreen)](https://github.com/SWivid/F5-TTS)
 [![arXiv](https://img.shields.io/badge/arXiv-2410.06885-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2410.06885)
