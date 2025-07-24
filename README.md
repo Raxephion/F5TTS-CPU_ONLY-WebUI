@@ -65,7 +65,7 @@ This script will:
 Once installed, you can start the Gradio app by running:
 
 ```bat
-run.bat
+launch.bat
 ```
 
 This script will:
