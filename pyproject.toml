@@ -1,21 +1,20 @@
-[build-system]
-requires = ["setuptools >= 61.0", "setuptools-scm>=8.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "f5-tts"
-version = "1.1.7"
-description = "F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching"
+version = "0.0.1"
+description = "A flow-matching based voice conversion and text-to-speech model"
 readme = "README.md"
-license = {text = "MIT License"}
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = ["tts", "vc"]
+authors = [
+    { name = "Pik-Cor", email = "pik.cor.1@gmail.com" },
+]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
     "accelerate>=0.33.0",
-    "bitsandbytes>0.37.0; platform_machine != 'arm64' and platform_system != 'Darwin'",
     "cached_path",
     "click",
     "datasets",
@@ -32,8 +31,12 @@ dependencies = [
     "safetensors",
     "soundfile",
     "tomli",
-    "torch>=2.0.0",
-    "torchaudio>=2.0.0",
+    # --- CPU-ONLY FIX ---
+    # Pinned to a specific version known to be stable for CPU inference.
+    # Newer versions (2.2+) have a known bug with the Whisper ASR model on CPU.
+    "torch==2.1.2",
+    "torchaudio==2.1.2",
+    # -------------------
     "torchdiffeq",
     "tqdm>=4.65.0",
     "transformers",
@@ -42,23 +45,25 @@ dependencies = [
     "vocos",
     "wandb",
     "x_transformers>=1.31.14",
-]
-
-[project.optional-dependencies]
-eval = [
-    "faster_whisper==0.10.1",
-    "funasr",
-    "jiwer",
-    "modelscope",
-    "zhconv",
-    "zhon",
+    # --- CPU-ONLY FIX ---
+    # bitsandbytes is for NVIDIA GPUs and fails on CPU-only systems.
+    # It has been commented out to ensure compatibility.
+    # "bitsandbytes>0.37.0; platform_machine != 'arm64' and platform_system != 'Darwin'",
+    # -------------------
 ]
 
 [project.urls]
-Homepage = "https://github.com/SWivid/F5-TTS"
+Homepage = "https://github.com/F5-TTS/F5-TTS"
 
 [project.scripts]
-"f5-tts_infer-cli" = "f5_tts.infer.infer_cli:main"
-"f5-tts_infer-gradio" = "f5_tts.infer.infer_gradio:main"
-"f5-tts_finetune-cli" = "f5_tts.train.finetune_cli:main"
-"f5-tts_finetune-gradio" = "f5_tts.train.finetune_gradio:main"
+f5-tts_preprocess = "f5_tts.scripts.preprocess:main"
+f5-tts_train = "f5_tts.scripts.train:main"
+f5-tts_infer-gradio = "f5_tts.infer.infer_gradio:main"
+f5-tts_infer-cli = "f5_tts.infer.infer_cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
