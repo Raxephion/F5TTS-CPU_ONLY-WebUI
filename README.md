@@ -1,5 +1,5 @@
 # F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching
-### CPU-Only Inference Fork by @Raxephion
+### CPU-Only Inference Fork with auto-installer and launcher by @Raxephion
 
 This fork has been modified to ensure smooth and stable inference on **CPU-only** machines. It addresses critical bugs that occur when running the original repository without a dedicated GPU.
 
@@ -39,79 +39,85 @@ These changes ensure that anyone can clone this repository and run it on a stand
 
 ---
 
-## News
+## Quick Start (Windows)
 
-- **2025/03/12**: 🔥 F5-TTS v1 base model with better training and inference performance. [Few demo](https://swivid.github.io/F5-TTS_updates)
-- **2024/10/08**: F5-TTS & E2 TTS base models on:
-  - [🤗 Hugging Face](https://huggingface.co/SWivid/F5-TTS)
-  - [🤖 Model Scope](https://www.modelscope.cn/models/SWivid/F5-TTS_Emilia-ZH-EN)
-  - [🟣 Wisemodel](https://wisemodel.cn/models/SJTU_X-LANCE/F5-TTS_Emilia-ZH-EN)
+### 🔧 Installation
+
+If you have [Anaconda](https://www.anaconda.com/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed and `conda` is available in your terminal:
+
+1. Download and extract this repository to `C:\F5-TTS-CPU_ONLY`
+2. Open **Anaconda Prompt** or a Conda-enabled terminal
+3. Run:
+
+```bat
+install.bat
+```
+
+This script will:
+- Create a new Conda environment `F5-TTS-CPU_ONLY`
+- Activate the environment
+- Install the project in editable mode
 
 ---
 
-## Installation
+### ▶️ Launch the App
 
-### Step 1: Create a Separate Environment
+Once installed, you can start the Gradio app by running:
 
-```bash
-# Create a Python 3.10 conda environment (or use virtualenv)
-conda create -n f5-tts python=3.10
-conda activate f5-tts
+```bat
+run.bat
 ```
 
-### Step 2: Install the Correct PyTorch Version for CPU (Crucial)
+This script will:
+- Activate the correct environment
+- Launch the Gradio-based TTS interface
+
+---
+
+## Manual Installation (if not using install.bat)
 
 ```bash
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cpu
-```
+# Create conda environment
+conda create -n F5-TTS-CPU_ONLY python=3.10
+conda activate F5-TTS-CPU_ONLY
 
-### Step 3: Clone this Repository and Install
+# Navigate to the folder
+cd C:\F5-TTS-CPU_ONLY
 
-```bash
-git clone https://github.com/Raxephion/F5-TTS-CPU_ONLY.git
-cd F5-TTS-CPU_ONLY
+# Install the project
 pip install -e .
 ```
 
 ---
 
-## Inference
+## Inference (Gradio or CLI)
 
 ### 1. Gradio App
 
-Currently supported features:
-- Basic TTS with Chunk Inference
-- Multi-Style / Multi-Speaker Generation
-- Voice Chat powered by Qwen2.5-3B-Instruct
-- Custom inference with more language support
-
 ```bash
-# Launch Gradio app (web interface)
 f5-tts_infer-gradio
 
-# Specify the port/host
+# Optional flags:
 f5-tts_infer-gradio --port 7860 --host 0.0.0.0
-
-# Launch a shareable link
 f5-tts_infer-gradio --share
 ```
 
 ### 2. CLI Inference
 
 ```bash
-# Run with arguments
+# Run with custom input
 f5-tts_infer-cli --model F5TTS_v1_Base \
---ref_audio "provide_prompt_wav_path_here.wav" \
---ref_text "The content, subtitle or transcription of reference audio." \
---gen_text "Some text you want TTS model generate for you."
+--ref_audio "prompt.wav" \
+--ref_text "transcription of reference audio" \
+--gen_text "Text you want the TTS model to generate."
 
-# Run with default config
+# Use default config
 f5-tts_infer-cli
 
-# Run with your own .toml config
+# With custom TOML
 f5-tts_infer-cli -c custom.toml
 
-# Multi-voice example
+# Multi-voice/story config
 f5-tts_infer-cli -c src/f5_tts/infer/examples/multi/story.toml
 ```
 
@@ -119,36 +125,24 @@ f5-tts_infer-cli -c src/f5_tts/infer/examples/multi/story.toml
 
 ## Training
 
-### 1. With Hugging Face Accelerate  
-Refer to training & finetuning guidance for best practice.
-
-### 2. With Gradio App
-
 ```bash
-# Quick start with Gradio web interface
+# Web UI-based fine-tuning
 f5-tts_finetune-gradio
 ```
 
-Read training & finetuning guidance for more instructions.
+Or refer to the training guide for Accelerate-based workflows.
 
 ---
 
-## Evaluation & Development
+## Development & Code Quality
 
-Use `pre-commit` to ensure code quality (will run linters and formatters automatically):
+Use `pre-commit` to automatically format and lint code:
 
 ```bash
 pip install pre-commit
 pre-commit install
-```
-
-Before making a pull request, run:
-
-```bash
 pre-commit run --all-files
 ```
-
-Note: Some model components have linting exceptions for E722 to accommodate tensor notation.
 
 ---
 
@@ -170,7 +164,7 @@ Note: Some model components have linting exceptions for E722 to accommodate tens
 
 ## Citation
 
-If our work and codebase is useful for you, please cite as:
+If our work and codebase is useful for you, please cite:
 
 ```bibtex
 @article{chen-etal-2024-f5tts,
@@ -187,4 +181,4 @@ If our work and codebase is useful for you, please cite as:
 
 Our code is released under the MIT License.  
 The pre-trained models are licensed under the CC-BY-NC license due to the training data (Emilia), which is an in-the-wild dataset.  
-Sorry for any inconvenience this may cause.
+Sorry for any inconvenience this m
